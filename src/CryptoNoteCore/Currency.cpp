@@ -104,56 +104,56 @@ bool Currency::generateGenesisBlock() {
   return true;
 }
 
-//bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
-//  uint64_t fee, uint64_t& reward, int64_t& emissionChange) const {
-//  assert(alreadyGeneratedCoins <= m_moneySupply);
-//  assert(m_emissionSpeedFactor > 0 && m_emissionSpeedFactor <= 8 * sizeof(uint64_t));
-//
-//  uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins) >> m_emissionSpeedFactor;
-//
-//  medianSize = std::max(medianSize, m_blockGrantedFullRewardZone);
-//  if (currentBlockSize > UINT64_C(2) * medianSize) {
-//    logger(TRACE) << "Block cumulative size is too big: " << currentBlockSize << ", expected less than " << 2 * medianSize;
-//    return false;
-//  }
-//
-//  uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
-//  uint64_t penalizedFee = getPenalizedAmount(fee, medianSize, currentBlockSize);
-//
-//  emissionChange = penalizedBaseReward - (fee - penalizedFee);
-//  reward = penalizedBaseReward + penalizedFee;
-//
-//  return true;
-//}
+bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
+  uint64_t fee, uint64_t& reward, int64_t& emissionChange) const {
+  assert(alreadyGeneratedCoins <= m_moneySupply);
+  assert(m_emissionSpeedFactor > 0 && m_emissionSpeedFactor <= 8 * sizeof(uint64_t));
+
+  uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins) >> m_emissionSpeedFactor;
+
+  medianSize = std::max(medianSize, m_blockGrantedFullRewardZone);
+  if (currentBlockSize > UINT64_C(2) * medianSize) {
+    logger(TRACE) << "Block cumulative size is too big: " << currentBlockSize << ", expected less than " << 2 * medianSize;
+    return false;
+  }
+
+  uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
+  uint64_t penalizedFee = getPenalizedAmount(fee, medianSize, currentBlockSize);
+
+  emissionChange = penalizedBaseReward - (fee - penalizedFee);
+  reward = penalizedBaseReward + penalizedFee;
+
+  return true;
+}
 ////////////////////////// from https://github.com/ducknote/darknote/blob/master/src/cryptonote_core/Currency.cpp ///////////
-  uint64_t Currency::baseRewardFunction(uint64_t alreadyGeneratedCoins, uint64_t height) const {
-    uint64_t base_reward = cryptonote::START_BLOCK_REWARD >> (height / cryptonote::REWARD_HALVING_INTERVAL);
-    base_reward = (std::max)(base_reward, cryptonote::MIN_BLOCK_REWARD);
-    base_reward = (std::min)(base_reward, m_moneySupply - alreadyGeneratedCoins);
-    logger(TRACE) << "baseRewardFunction : " << base_reward;
-    return base_reward;
-  }
+//  uint64_t Currency::baseRewardFunction(uint64_t alreadyGeneratedCoins, uint64_t height) const {
+//    uint64_t base_reward = cryptonote::START_BLOCK_REWARD >> (height / cryptonote::REWARD_HALVING_INTERVAL);
+//    base_reward = (std::max)(base_reward, cryptonote::MIN_BLOCK_REWARD);
+//    base_reward = (std::min)(base_reward, m_moneySupply - alreadyGeneratedCoins);
+//    logger(TRACE) << "baseRewardFunction : " << base_reward;
+//    return base_reward;
+//  }
 
-  bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
-                                uint64_t fee, uint64_t height, uint64_t& reward, int64_t& emissionChange) const {
-      assert(alreadyGeneratedCoins <= m_moneySupply);
+//  bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
+//                                uint64_t fee, uint64_t height, uint64_t& reward, int64_t& emissionChange) const {
+//      assert(alreadyGeneratedCoins <= m_moneySupply);
 
-      uint64_t baseReward = baseRewardFunction(alreadyGeneratedCoins, height);
+//      uint64_t baseReward = baseRewardFunction(alreadyGeneratedCoins, height);
 
-      size_t blockGrantedFullRewardZone = m_blockGrantedFullRewardZone;
-      medianSize = std::max(medianSize, blockGrantedFullRewardZone);
-      if (currentBlockSize > UINT64_C(2) * medianSize) {
-        logger(TRACE) << "Block cumulative size is too big: " << currentBlockSize << ", expected less than " << 2 * medianSize;
-        return false;
-      }
+//      size_t blockGrantedFullRewardZone = m_blockGrantedFullRewardZone;
+//      medianSize = std::max(medianSize, blockGrantedFullRewardZone);
+//      if (currentBlockSize > UINT64_C(2) * medianSize) {
+//        logger(TRACE) << "Block cumulative size is too big: " << currentBlockSize << ", expected less than " << 2 * medianSize;
+//        return false;
+//      }
 
-      uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
+//      uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
 
-      emissionChange = penalizedBaseReward;
-      reward = penalizedBaseReward + fee;
-      logger(TRACE) << "getBlockReward emissionChange : " << emissionChange << " : fee : " << fee << " reward : " << reward;
-      return true;
-  }
+//      emissionChange = penalizedBaseReward;
+//      reward = penalizedBaseReward + fee;
+//      logger(TRACE) << "getBlockReward emissionChange : " << emissionChange << " : fee : " << fee << " reward : " << reward;
+//      return true;
+//  }
 ////////////////////////////// end //////////////////////////////
  
 size_t Currency::maxBlockCumulativeSize(uint64_t height) const {
